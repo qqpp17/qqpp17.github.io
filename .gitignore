@@ -1,3 +1,11 @@
 public/
 resources/
 .hugo_build.lock
+themes/hugo-theme-dream-master/
+themes/hugo-theme-dream/docs/
+themes/hugo-theme-dream/src/
+themes/hugo-theme-dream/decapCMS/
+themes/hugo-theme-dream/package.json
+themes/hugo-theme-dream/pnpm-lock.yaml
+themes/hugo-theme-dream/pnpm-workspace.yaml
+themes/hugo-theme-dream/tailwind.config.js

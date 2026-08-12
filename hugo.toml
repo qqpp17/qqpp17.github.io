@@ -1,14 +1,23 @@
 baseURL = "https://qqpp17.github.io/"
-title = "潘华珍的博客"
-theme = "PaperMod"
 defaultContentLanguage = "zh-cn"
-
-[languages]
-  [languages.zh-cn]
-    label = "中文"
-    locale = "zh-cn"
-    weight = 1
+locale = "zh-cn"
+title = "潘华珍的博客"
+theme = "hugo-theme-dream"
 
 [params]
-  author = "潘华珍"
-  description = "个人学习博客"
+# 多彩主题：亮色用 autumn（秋日暖色），暗色用 synthwave（霓虹炫酷）
+lightTheme = "autumn"
+darkTheme = "synthwave"
+
+# 站点信息
+author = "潘华珍"
+headerTitle = "潘华珍的博客"
+motto = "记录学习与生活的多彩瞬间 ✨"
+siteStartYear = 2026
+description = "个人学习博客"
+
+# 界面选项
+stickyNav = true
+showTableOfContents = true
+showPrevNextPost = true
+imageZoomableInPost = true
