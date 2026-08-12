@@ -1,0 +1,14 @@
+baseURL = "https://qqpp17.github.io/"
+title = "潘华珍的博客"
+theme = "PaperMod"
+defaultContentLanguage = "zh-cn"
+
+[languages]
+  [languages.zh-cn]
+    label = "中文"
+    locale = "zh-cn"
+    weight = 1
+
+[params]
+  author = "潘华珍"
+  description = "个人学习博客"
