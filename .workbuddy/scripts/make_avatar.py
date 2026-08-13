@@ -111,9 +111,10 @@ out.paste(final, (0, 0), mask)
 ring = ImageDraw.Draw(out)
 ring.ellipse((5, 5, SIZE-5, SIZE-5), outline=(196, 162, 148, 150), width=3)
 
-out.convert('RGB').save(os.path.join(OUT, "avatar.png"), "PNG", optimize=True)
+# 关键：保留 RGBA 透明通道，不要转成 RGB（否则透明角落会变成黑色方块）
+out.save(os.path.join(OUT, "avatar.png"), "PNG", optimize=True)
 print("avatar saved:", os.path.getsize(os.path.join(OUT, "avatar.png")), "bytes")
 
 fav = out.resize((64, 64), Image.LANCZOS)
-fav.convert('RGB').save(os.path.join(OUT, "favicon.png"), "PNG", optimize=True)
+fav.save(os.path.join(OUT, "favicon.png"), "PNG", optimize=True)
 print("favicon saved")

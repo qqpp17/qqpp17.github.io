@@ -162,6 +162,16 @@ html.dark .hero-avatar {
   transition: transform 0.3s ease;
 }
 
+/* 导航头像圆角裁剪：确保 PNG 透明角落不显示成方块 */
+.avatar.cursor-pointer > div {
+  overflow: hidden !important;
+  box-shadow: 0 0 0 1.5px rgba(233, 30, 99, 0.18) !important;
+}
+
+html.dark .avatar.cursor-pointer > div {
+  box-shadow: 0 0 0 1.5px rgba(255, 128, 171, 0.22) !important;
+}
+
 .avatar.cursor-pointer:hover {
   transform: scale(1.08);
 }
