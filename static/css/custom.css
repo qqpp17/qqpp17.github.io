@@ -1,0 +1,222 @@
+/* ========== 自定义样式 - 多彩炫酷增强 ========== */
+
+/* 1. 头像彩虹光环 */
+.avatar.cursor-pointer {
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.avatar.cursor-pointer:hover {
+  transform: scale(1.08) rotate(5deg);
+}
+
+.avatar.cursor-pointer::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #5f27cd, #ff6b6b
+  );
+  z-index: -1;
+  animation: rotate-border 4s linear infinite;
+  opacity: 0.85;
+  filter: blur(2px);
+}
+
+.avatar.cursor-pointer::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 180deg,
+    rgba(255, 107, 107, 0.4),
+    rgba(254, 202, 87, 0.4),
+    rgba(72, 219, 251, 0.4),
+    rgba(255, 159, 243, 0.4),
+    rgba(84, 160, 255, 0.4),
+    rgba(95, 39, 205, 0.4),
+    rgba(255, 107, 107, 0.4)
+  );
+  z-index: -2;
+  animation: rotate-border 6s linear infinite reverse;
+  filter: blur(8px);
+}
+
+@keyframes rotate-border {
+  to { transform: rotate(360deg); }
+}
+
+/* 2. 站点标题大字渐变 */
+.text-lg.font-semibold.cursor-pointer {
+  font-size: 1.35rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #ff9ff3 75%, #5f27cd 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-flow 5s ease infinite;
+  letter-spacing: 0.5px;
+}
+
+@keyframes gradient-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* 3. 副标题样式 */
+.text-base-content\/60.text-sm {
+  font-size: 0.85rem;
+  font-style: italic;
+  opacity: 0.85;
+  background: linear-gradient(90deg, #feca57, #ff9ff3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 4. 顶部导航栏玻璃拟态 */
+nav.sticky.top-0 {
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  background-color: rgba(255, 255, 255, 0.75) !important;
+}
+
+html.dark nav.sticky.top-0 {
+  background-color: rgba(20, 10, 40, 0.75) !important;
+}
+
+/* 5. 导航项 hover 动效 */
+nav a:not(.text-lg) {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+nav a:not(.text-lg):hover {
+  transform: translateY(-2px);
+}
+
+nav a:not(.text-lg)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+nav a:not(.text-lg):hover::after {
+  width: 100%;
+}
+
+/* 6. 卡片墙增强 - 悬浮动效 */
+.dream-column .card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.dream-column .card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 40px -10px rgba(255, 107, 107, 0.3),
+              0 10px 20px -5px rgba(72, 219, 251, 0.2);
+}
+
+html.dark .dream-column .card:hover {
+  box-shadow: 0 20px 40px -10px rgba(95, 39, 205, 0.4),
+              0 10px 20px -5px rgba(255, 159, 243, 0.2);
+}
+
+/* 7. 卡片标题加图标 */
+.card-title {
+  position: relative;
+  padding-left: 1.2rem;
+  font-weight: 700;
+}
+
+.card-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 70%;
+  background: linear-gradient(180deg, #ff6b6b, #feca57, #48dbfb);
+  border-radius: 2px;
+}
+
+/* 8. 整个页面背景微动效 */
+body {
+  background-attachment: fixed;
+}
+
+/* 9. 文章页图片圆角 */
+.post-content img,
+.prose img {
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.2);
+}
+
+/* 10. 暗色模式特别优化 */
+html.dark .text-lg.font-semibold.cursor-pointer {
+  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #ff9ff3 50%, #54a0ff 75%, #5f27cd 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* 11. 滚动条美化 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff6b6b, #feca57, #48dbfb);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #feca57, #ff9ff3, #5f27cd);
+}
+
+/* 12. 选中文字高亮 */
+::selection {
+  background: linear-gradient(90deg, rgba(255, 107, 107, 0.4), rgba(254, 202, 87, 0.4));
+  color: inherit;
+}
+
+html.dark ::selection {
+  background: linear-gradient(90deg, rgba(95, 39, 205, 0.5), rgba(255, 159, 243, 0.5));
+}
+
+/* 13. 翻转动画增强 */
+[x-cloak] { display: none !important; }
+
+/* 14. 社交图标卡片 hover */
+.menu.horizontal li a {
+  transition: all 0.3s ease;
+}
+
+.menu.horizontal li a:hover {
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  color: white !important;
+  transform: translateY(-3px) scale(1.1);
+}
+
+html.dark .menu.horizontal li a:hover {
+  background: linear-gradient(135deg, #5f27cd, #ff9ff3);
+}

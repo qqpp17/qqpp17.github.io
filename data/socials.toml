@@ -1,0 +1,32 @@
+# 个人社交链接 - 在关于页翻转后显示
+# icon 使用 ionicons 名称：https://ionic.io/ionicons
+
+[[socials]]
+icon = "logo-github"
+href = "https://github.com/qqpp17"
+title = "GitHub"
+target = "_blank"
+
+[[socials]]
+icon = "mail"
+href = "mailto:qqpp17@example.com"
+title = "邮箱"
+target = "_self"
+
+[[socials]]
+icon = "globe-outline"
+href = "/"
+title = "博客"
+target = "_self"
+
+[[socials]]
+icon = "logo-codepen"
+href = "#"
+title = "作品集"
+target = "_blank"
+
+[[socials]]
+icon = "logo-wechat"
+href = "#"
+title = "微信"
+target = "_self"

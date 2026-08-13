@@ -11,10 +11,13 @@ darkTheme = "synthwave"
 
 # 站点信息
 author = "潘华珍"
+avatar = "img/avatar.png"
+favicon = "img/favicon.png"
 headerTitle = "潘华珍的博客"
 motto = "记录学习与生活的多彩瞬间 ✨"
 siteStartYear = 2026
-description = "个人学习博客"
+description = "潘华珍的个人博客 - 记录学习笔记、技术分享与生活点滴"
+email = "qqpp17@example.com"
 
 # 界面选项
 stickyNav = true
@@ -22,5 +25,12 @@ showTableOfContents = true
 showPrevNextPost = true
 imageZoomableInPost = true
 
-# 导航栏顺序
+# 自定义页脚签名
+footerBottomText = "💖 用心打造 · Powered by <a class='hover:underline' href='https://gohugo.io/' target='_blank'>Hugo</a> · Theme <a class='hover:underline' href='https://github.com/g1eny0ung/hugo-theme-dream' target='_blank'>Dream</a>"
+
+# 导航栏顺序（关于按钮放在最前）
 reorderNavItems = ["about", "posts", "categories", "tags"]
+
+# 高级配置
+[params.advanced]
+customCSS = ["css/custom.css"]

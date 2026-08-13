@@ -1,0 +1,74 @@
+{{ define "main"}}
+
+<!-- 个人简介 Hero 区 -->
+<section class="dream-hero max-w-[68ch] mx-auto px-4 mt-4 mb-12 text-center">
+  <div class="hero-card bg-base-100/60 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-base-content/10 dark:border-base-content/20">
+    <!-- 大头像 -->
+    <div class="hero-avatar mx-auto mb-4 w-32 h-32 rounded-full overflow-hidden shadow-2xl ring-4 ring-primary/30 hover:ring-primary/60 transition-all duration-500 hover:scale-105">
+      <img src="{{ site.Params.avatar | relURL }}" alt="{{ site.Params.author }}" class="w-full h-full object-cover" />
+    </div>
+    <h1 class="text-3xl md:text-4xl font-extrabold mb-2 bg-gradient-to-r from-rose-500 via-amber-500 via-sky-500 to-violet-600 bg-clip-text text-transparent">
+      {{ site.Params.author }}
+    </h1>
+    <p class="text-base-content/70 text-base italic mb-4">{{ site.Params.motto }}</p>
+
+    <!-- 标签云 -->
+    <div class="flex flex-wrap justify-center gap-2 my-4">
+      <span class="badge badge-lg bg-gradient-to-r from-rose-500/20 to-amber-500/20 text-rose-600 border-rose-500/30">🌈 前端开发</span>
+      <span class="badge badge-lg bg-gradient-to-r from-amber-500/20 to-lime-500/20 text-amber-600 border-amber-500/30">✨ Hugo博客</span>
+      <span class="badge badge-lg bg-gradient-to-r from-sky-500/20 to-violet-500/20 text-sky-600 border-sky-500/30">🎨 多彩设计</span>
+      <span class="badge badge-lg bg-gradient-to-r from-violet-500/20 to-rose-500/20 text-violet-600 border-violet-500/30">📚 终身学习</span>
+    </div>
+
+    <!-- 社交按钮 -->
+    <div class="flex flex-wrap justify-center gap-3 mt-5">
+      {{ range hugo.Data.socials.socials }}
+      <a href="{{ .href }}" target="{{ .target }}" title="{{ .title }}"
+         class="btn btn-sm rounded-full bg-base-100 border-base-content/30 hover:bg-gradient-to-r hover:from-rose-500 hover:to-amber-500 hover:text-white hover:border-transparent hover:scale-105 transition-all duration-300">
+        <ion-icon name="{{ .icon }}"></ion-icon>
+        <span class="hidden sm:inline">{{ .title }}</span>
+      </a>
+      {{ end }}
+    </div>
+
+    <!-- 滚动提示 -->
+    <div class="mt-6 text-xs text-base-content/40 animate-bounce">
+      <ion-icon name="chevron-down-outline"></ion-icon>
+      向下滚动查看文章
+    </div>
+  </div>
+</section>
+
+<!-- 分隔线 -->
+<div class="max-w-[68ch] mx-auto px-4 mb-6">
+  <div class="divider text-sm text-base-content/50">
+    <span class="flex items-center gap-1">
+      <ion-icon name="book-outline"></ion-icon>
+      最新文章
+    </span>
+  </div>
+</div>
+
+{{ $paginator := .Paginate (where site.RegularPages "Type" "posts") }}
+
+<div class="dream-grid opacity-0">
+  {{ range $paginator.Pages }}
+  <div class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 p-4 dream-column">
+    {{ .Render "summary" }}
+  </div>
+  {{ end }}
+</div>
+
+{{ if gt $paginator.TotalPages 1 }}
+<div class="flex justify-center mt-8">
+  {{ partial "paginator.html" (dict "paginator" $paginator) }}
+</div>
+{{ end }}
+
+{{ end }}
+
+{{ define "js" }}
+{{ if site.Params.Experimental.jsDate }}
+  {{ partial "luxon.html" . }}
+{{ end }}
+{{ end }}
