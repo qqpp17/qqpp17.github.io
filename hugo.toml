@@ -21,3 +21,6 @@ stickyNav = true
 showTableOfContents = true
 showPrevNextPost = true
 imageZoomableInPost = true
+
+# 导航栏顺序
+reorderNavItems = ["about", "posts", "categories", "tags"]
