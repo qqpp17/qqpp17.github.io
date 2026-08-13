@@ -1,99 +1,119 @@
-"""Generate a colorful, designed avatar (fluid gradient + geometric lines + glass-letter P)."""
+"""Generate a hand-drawn illustration avatar with Morandi low-saturation colors."""
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-import os, math
+import os, math, random
 
 OUT = r"D:\college\blog\qqpp17.github.io\static\img"
 os.makedirs(OUT, exist_ok=True)
 
 SIZE = 512
+CW = SIZE // 2
 
-# ---------- 1. 流体多彩背景 ----------
+# ---------- 莫兰迪低饱和调色板 ----------
+MORANDI = {
+    "dusty_pink":  (201, 173, 167, 255),
+    "sage":        (163, 177, 138, 255),
+    "muted_blue":  (142, 154, 175, 255),
+    "taupe":       (184, 169, 157, 255),
+    "lavender":    (184, 169, 201, 255),
+    "cream":       (220, 208, 192, 255),
+    "clay":        (196, 162, 148, 255),
+}
+
+# ---------- 1. 柔和流体背景（莫兰迪色） ----------
 base = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
 draw = ImageDraw.Draw(base)
-
-# 多个彩色光斑，位置分散，后面高斯模糊成流体
 blobs = [
-    # (cx, cy, radius, color)
-    (SIZE*0.25, SIZE*0.25, 260, (255, 154, 158, 255)),   # 粉红
-    (SIZE*0.78, SIZE*0.22, 240, (255, 179, 71, 255)),    # 珊瑚橙
-    (SIZE*0.82, SIZE*0.80, 250, (189, 140, 224, 255)),   # 紫罗兰
-    (SIZE*0.22, SIZE*0.82, 230, (132, 216, 255, 255)),   # 天蓝
-    (SIZE*0.52, SIZE*0.50, 200, (160, 233, 200, 255)),   # 薄荷绿
-    (SIZE*0.50, SIZE*0.10, 180, (255, 226, 159, 255)),   # 暖黄
+    (SIZE*0.28, SIZE*0.26, 280, MORANDI["dusty_pink"]),
+    (SIZE*0.78, SIZE*0.24, 250, MORANDI["lavender"]),
+    (SIZE*0.80, SIZE*0.80, 270, MORANDI["sage"]),
+    (SIZE*0.22, SIZE*0.82, 240, MORANDI["muted_blue"]),
+    (SIZE*0.50, SIZE*0.52, 220, MORANDI["cream"]),
+    (SIZE*0.52, SIZE*0.12, 200, MORANDI["clay"]),
 ]
 for cx, cy, r, color in blobs:
     draw.ellipse([cx-r, cy-r, cx+r, cy+r], fill=color)
+fluid = base.filter(ImageFilter.GaussianBlur(radius=130))
+fluid = fluid.filter(ImageFilter.GaussianBlur(radius=45))
 
-# 大幅模糊 -> 流体渐变
-fluid = base.filter(ImageFilter.GaussianBlur(radius=120))
-# 再叠一层轻微模糊增加层次
-fluid = fluid.filter(ImageFilter.GaussianBlur(radius=40))
+# ---------- 2. 手绘插画层（星星 / 波浪 / 小花 / 光点） ----------
+art = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+ad = ImageDraw.Draw(art)
 
-# ---------- 2. 细线条几何装饰（白色半透明，呼应线条风） ----------
-lines = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
-ld = ImageDraw.Draw(lines)
+def star(cx, cy, r, fill, rot=0.0):
+    pts = []
+    for i in range(10):
+        a = math.pi/5 * i - math.pi/2 + rot
+        rad = r if i % 2 == 0 else r * 0.42
+        pts.append((cx + rad*math.cos(a), cy + rad*math.sin(a)))
+    ad.polygon(pts, fill=fill)
 
-# 同心圆
-for i in range(1, 7):
-    r = i * 34
-    ld.ellipse([SIZE//2 - r, SIZE//2 - r, SIZE//2 + r, SIZE//2 + r],
-               outline=(255, 255, 255, int(28 - i*2)), width=1)
+def flower(cx, cy, r, stroke):
+    # 5 片花瓣
+    for k in range(5):
+        a = math.pi*2/5 * k - math.pi/2
+        px = cx + r*0.55*math.cos(a)
+        py = cy + r*0.55*math.sin(a)
+        ad.ellipse([px-r*0.42, py-r*0.42, px+r*0.42, py+r*0.42],
+                   outline=stroke, width=2)
+    ad.ellipse([cx-r*0.18, cy-r*0.18, cx+r*0.18, cy+r*0.18], fill=stroke)
 
-# 弧形流线（三段不同半径的弧）
-for k in range(3):
-    rr = 150 + k * 60
-    sweep = 200 - k*20
-    start = 30 + k*40
-    ld.arc([SIZE//2-rr, SIZE//2-rr, SIZE//2+rr, SIZE//2+rr],
-           start=start, end=start+sweep,
-           fill=(255, 255, 255, 30), width=1)
+# 柔光晕（几团淡淡白光，增加手绘温柔感）
+glow = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+gd = ImageDraw.Draw(glow)
+for cx, cy, r in [(150, 140, 90), (370, 360, 110), (300, 130, 70)]:
+    gd.ellipse([cx-r, cy-r, cx+r, cy+r], fill=(255, 255, 255, 38))
+glow = glow.filter(ImageFilter.GaussianBlur(radius=35))
+art = Image.alpha_composite(art, glow)
+ad = ImageDraw.Draw(art)
 
-# 散落小圆点
-import random
-random.seed(7)
-for _ in range(40):
-    x = random.randint(20, SIZE-20)
-    y = random.randint(20, SIZE-20)
-    # 避免中心区域
-    if (x-SIZE//2)**2 + (y-SIZE//2)**2 < 120**2:
-        continue
-    rr = random.randint(1, 3)
-    ld.ellipse([x-rr, y-rr, x+rr, y+rr], fill=(255, 255, 255, random.randint(40, 120)))
+# 手绘星星（白色半透明，大小不一，不规则散落）
+random.seed(11)
+star_pos = [(120, 150, 16), (390, 150, 12), (340, 330, 20), (160, 360, 14),
+            (250, 200, 10), (410, 280, 9), (95, 300, 11)]
+for cx, cy, r in star_pos:
+    star(cx, cy, r, (255, 255, 255, random.randint(120, 200)), rot=random.random()*0.6)
 
-# ---------- 3. 玫瑰色点睛曲线 ----------
-rose = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
-rd = ImageDraw.Draw(rose)
-rd.arc([SIZE//2-180, SIZE//2-220, SIZE//2+180, SIZE//2+260],
-       start=210, end=330, fill=(255, 64, 129, 90), width=3)
+# 波浪线（有机手绘曲线，白色描边）
+def wavy(y0, amp, color, width=2, alpha=70):
+    pts = []
+    for x in range(20, SIZE-20, 6):
+        y = y0 + amp * math.sin((x/70.0)) + 6*math.sin(x/22.0)
+        pts.append((x, y))
+    ad.line(pts, fill=(*color[:3], alpha), width=width, joint="curve")
 
-# ---------- 4. 中心几何点缀（含蓄，避免空） ----------
-center = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
-cd = ImageDraw.Draw(center)
-# 中心细圆环 + 一个小玫瑰点
-cd.ellipse([SIZE//2-46, SIZE//2-46, SIZE//2+46, SIZE//2+46],
-           outline=(255, 255, 255, 70), width=2)
-cd.ellipse([SIZE//2-6, SIZE//2-6, SIZE//2+6, SIZE//2+6],
-           fill=(255, 64, 129, 160))
+wavy(120, 10, MORANDI["cream"])
+wavy(400, 12, MORANDI["cream"])
+wavy(250, 8,  MORANDI["taupe"])
 
-# ---------- 合成 ----------
-final = Image.alpha_composite(fluid, lines)
-final = Image.alpha_composite(final, rose)
-final = Image.alpha_composite(final, center)
+# 小花（右下角，白色描边）
+flower(385, 400, 34, (255, 255, 255, 110))
 
-# 圆形裁剪
+# 散落小圆点（莫兰迪色 + 白）
+dots = [(200, 110, 3, MORANDI["clay"]), (430, 200, 4, MORANDI["sage"]),
+        (110, 230, 3, MORANDI["muted_blue"]), (300, 420, 3, MORANDI["lavender"]),
+        (260, 300, 2, (255,255,255,140)), (180, 420, 2, (255,255,255,120))]
+for cx, cy, r, c in dots:
+    ad.ellipse([cx-r, cy-r, cx+r, cy+r], fill=c)
+
+# 轻微模糊，模拟手绘柔边
+art = art.filter(ImageFilter.GaussianBlur(radius=0.6))
+
+# ---------- 3. 合成 + 圆形裁剪 ----------
+final = Image.alpha_composite(fluid, art)
 mask = Image.new('L', (SIZE, SIZE), 0)
 ImageDraw.Draw(mask).ellipse((0, 0, SIZE, SIZE), fill=255)
+# 边缘柔化
+mask = mask.filter(ImageFilter.GaussianBlur(radius=2))
 out = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
 out.paste(final, (0, 0), mask)
 
-# 轻微内描边（白圈）增加精致感
+# 细描边（莫兰迪陶土色，比纯白更柔和）
 ring = ImageDraw.Draw(out)
-ring.ellipse((6, 6, SIZE-6, SIZE-6), outline=(255, 255, 255, 120), width=3)
+ring.ellipse((5, 5, SIZE-5, SIZE-5), outline=(196, 162, 148, 150), width=3)
 
 out.convert('RGB').save(os.path.join(OUT, "avatar.png"), "PNG", optimize=True)
 print("avatar saved:", os.path.getsize(os.path.join(OUT, "avatar.png")), "bytes")
 
-# favicon 64
 fav = out.resize((64, 64), Image.LANCZOS)
 fav.convert('RGB').save(os.path.join(OUT, "favicon.png"), "PNG", optimize=True)
 print("favicon saved")
