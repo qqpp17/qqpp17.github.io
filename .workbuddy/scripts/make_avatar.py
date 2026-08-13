@@ -66,41 +66,19 @@ rd = ImageDraw.Draw(rose)
 rd.arc([SIZE//2-180, SIZE//2-220, SIZE//2+180, SIZE//2+260],
        start=210, end=330, fill=(255, 64, 129, 90), width=3)
 
-# ---------- 4. 字母 P（玻璃空心描边质感） ----------
-letter = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
-ltd = ImageDraw.Draw(letter)
-
-font_path = None
-for p in [
-    r"C:\Windows\Fonts\arialbd.ttf",
-    r"C:\Windows\Fonts\arial.ttf",
-    r"C:\Windows\Fonts\calibrib.ttf",
-    r"C:\Windows\Fonts\segoeui.ttf",
-]:
-    if os.path.exists(p):
-        font_path = p
-        break
-font = ImageFont.truetype(font_path, 300) if font_path else ImageFont.load_default()
-
-text = "P"
-bbox = ltd.textbbox((0, 0), text, font=font)
-tw, th = bbox[2]-bbox[0], bbox[3]-bbox[1]
-x = (SIZE - tw)//2 - bbox[0]
-y = (SIZE - th)//2 - bbox[1] - 14
-
-# 外发光阴影（深色，弱）
-ltd.text((x, y), text, font=font, fill=(0, 0, 0, 60))
-# 玻璃描边空心字：白色描边 + 半透明填充
-ltd.text((x, y), text, font=font, fill=(255, 255, 255, 55),
-         stroke_width=10, stroke_fill=(255, 255, 255, 235))
-# 内部再描一圈浅色增加立体
-ltd.text((x, y), text, font=font, fill=(255, 255, 255, 0),
-         stroke_width=3, stroke_fill=(255, 255, 255, 180))
+# ---------- 4. 中心几何点缀（含蓄，避免空） ----------
+center = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+cd = ImageDraw.Draw(center)
+# 中心细圆环 + 一个小玫瑰点
+cd.ellipse([SIZE//2-46, SIZE//2-46, SIZE//2+46, SIZE//2+46],
+           outline=(255, 255, 255, 70), width=2)
+cd.ellipse([SIZE//2-6, SIZE//2-6, SIZE//2+6, SIZE//2+6],
+           fill=(255, 64, 129, 160))
 
 # ---------- 合成 ----------
 final = Image.alpha_composite(fluid, lines)
 final = Image.alpha_composite(final, rose)
-final = Image.alpha_composite(final, letter)
+final = Image.alpha_composite(final, center)
 
 # 圆形裁剪
 mask = Image.new('L', (SIZE, SIZE), 0)
