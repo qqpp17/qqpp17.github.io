@@ -5,13 +5,9 @@ title = "潘华珍的博客"
 theme = "hugo-theme-dream"
 
 [params]
-# 多彩主题：亮色用 autumn（秋日暖色），暗色用 synthwave（霓虹炫酷）
-lightTheme = "autumn"
-darkTheme = "synthwave"
-
-# 背景图
-backgroundImage = "img/rose-bg.jpg"
-backgroundImageDark = "img/rose-bg-dark.jpg"
+# 主题色：保持 dream 默认（emerald/forest），不强制覆盖
+# lightTheme = "emerald"
+# darkTheme = "forest"
 
 # 站点信息
 author = "潘华珍"
@@ -30,7 +26,7 @@ showPrevNextPost = true
 imageZoomableInPost = true
 
 # 自定义页脚签名
-footerBottomText = "🌹 用心打造 · Powered by <a class='hover:underline' href='https://gohugo.io/' target='_blank'>Hugo</a> · Theme <a class='hover:underline' href='https://github.com/g1eny0ung/hugo-theme-dream' target='_blank'>Dream</a>"
+footerBottomText = "用心打造 · Powered by <a class='hover:underline' href='https://gohugo.io/' target='_blank'>Hugo</a> · Theme <a class='hover:underline' href='https://github.com/g1eny0ung/hugo-theme-dream' target='_blank'>Dream</a>"
 
 # 导航栏顺序
 reorderNavItems = ["about", "posts", "categories", "tags"]
