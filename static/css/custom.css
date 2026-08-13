@@ -15,10 +15,53 @@ body {
 }
 
 html.dark body {
-  background-color: #1a1a1a;
+  background-color: #1e1e1e;
   background-image:
-    radial-gradient(circle at 1px 1px, rgba(255, 128, 171, 0.04) 1px, transparent 0);
+    radial-gradient(circle at 1px 1px, rgba(255, 128, 171, 0.03) 1px, transparent 0);
   background-size: 32px 32px;
+}
+
+/* ========== 1.5 暗色模式文字可读性修复（关键！） ========== */
+html.dark {
+  color-scheme: dark;
+}
+
+/* 确保暗色模式下正文文字足够亮 */
+html.dark body,
+html.dark .dream-hero,
+html.dark .hero-card,
+html.dark .card,
+html.dark .card-body,
+html.dark .prose,
+html.dark .text-base-content,
+html.dark p,
+html.dark span,
+html.dark li {
+  color: rgba(230, 230, 230, 0.92) !important;
+}
+
+/* 标题更亮 */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark .card-title,
+html.dream-hero h1 {
+  color: #f0f0f0 !important;
+}
+
+/* 副标题/描述文字 */
+html.dark .text-base-content\/50,
+html.dark .text-base-content\/60,
+html.dark .text-base-content\/70,
+html.dark .text-sm.opacity-30,
+html.dark .text-xs {
+  color: rgba(180, 180, 180, 0.7) !important;
+}
+
+/* badge 标签文字 */
+html.dark .badge {
+  color: rgba(220, 220, 220, 0.9) !important;
 }
 
 /* ========== 2. 滚动条：简约现代风（带一丝玫瑰调） ========== */
@@ -69,7 +112,7 @@ nav.sticky.top-0 {
 }
 
 html.dark nav.sticky.top-0 {
-  background-color: rgba(26, 26, 26, 0.8) !important;
+  background-color: rgba(30, 30, 30, 0.88) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
@@ -145,11 +188,11 @@ html.dark .hero-avatar {
 }
 
 html.dark .hero-card {
-  background: rgba(38, 38, 38, 0.85) !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background: rgba(40, 40, 40, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.2),
-    0 4px 16px rgba(0, 0, 0, 0.15) !important;
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* 去掉卡片上的玫瑰角标 */
@@ -169,8 +212,8 @@ html.dark .hero-card {
 }
 
 html.dark .badge.badge-lg {
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(60, 60, 60, 0.5) !important;
 }
 
 .badge.badge-lg:hover {
@@ -189,8 +232,9 @@ html.dark .badge.badge-lg {
 }
 
 html.dark .dream-hero .btn {
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(60, 60, 60, 0.6) !important;
+  color: rgba(220, 220, 220, 0.9) !important;
 }
 
 .dream-hero .btn:hover {
@@ -216,9 +260,9 @@ html.dark .dream-hero .btn {
 }
 
 html.dark .dream-column .card {
-  background: rgba(38, 38, 38, 0.9) !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+  background: rgba(40, 40, 40, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
 }
 
 .dream-column .card:hover {
