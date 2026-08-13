@@ -9,6 +9,10 @@ theme = "hugo-theme-dream"
 lightTheme = "autumn"
 darkTheme = "synthwave"
 
+# 背景图
+backgroundImage = "img/rose-bg.jpg"
+backgroundImageDark = "img/rose-bg-dark.jpg"
+
 # 站点信息
 author = "潘华珍"
 avatar = "img/avatar.png"
@@ -26,9 +30,9 @@ showPrevNextPost = true
 imageZoomableInPost = true
 
 # 自定义页脚签名
-footerBottomText = "💖 用心打造 · Powered by <a class='hover:underline' href='https://gohugo.io/' target='_blank'>Hugo</a> · Theme <a class='hover:underline' href='https://github.com/g1eny0ung/hugo-theme-dream' target='_blank'>Dream</a>"
+footerBottomText = "🌹 用心打造 · Powered by <a class='hover:underline' href='https://gohugo.io/' target='_blank'>Hugo</a> · Theme <a class='hover:underline' href='https://github.com/g1eny0ung/hugo-theme-dream' target='_blank'>Dream</a>"
 
-# 导航栏顺序（关于按钮放在最前）
+# 导航栏顺序
 reorderNavItems = ["about", "posts", "categories", "tags"]
 
 # 高级配置
