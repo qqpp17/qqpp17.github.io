@@ -1,55 +1,75 @@
-"""Generate avatar PNG: 渐变背景 + 字母 P (拉丁字母，多彩炫酷)"""
-from PIL import Image, ImageDraw, ImageFont
-import os, glob
+"""Generate a colorful, designed avatar (fluid gradient + geometric lines + glass-letter P)."""
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+import os, math
 
 OUT = r"D:\college\blog\qqpp17.github.io\static\img"
 os.makedirs(OUT, exist_ok=True)
 
-def make_gradient(size, colors):
-    """线性渐变（对角线）"""
-    img = Image.new('RGB', (size, size))
-    pixels = img.load()
-    for y in range(size):
-        t_y = y / (size - 1)
-        for x in range(size):
-            t_x = x / (size - 1)
-            t = (t_x + t_y) / 2
-            seg = t * (len(colors) - 1)
-            idx = int(seg)
-            frac = seg - idx
-            if idx >= len(colors) - 1:
-                r, g, b = colors[-1]
-            else:
-                r1, g1, b1 = colors[idx]
-                r2, g2, b2 = colors[idx+1]
-                r = int(r1 + (r2-r1)*frac)
-                g = int(g1 + (g2-g1)*frac)
-                b = int(b1 + (b2-b1)*frac)
-            pixels[x, y] = (r, g, b)
-    return img
+SIZE = 512
 
-size = 400
-# 紫粉橙日落渐变（和 autumn 主题搭配）
-gradient_colors = [
-    (255, 154, 158),  # 粉橙 #ff9a9e
-    (254, 140, 158),  # 橙红 #fe8c9e
-    (189, 140, 224),  # 紫罗兰 #bd8ce0
-    (91, 80, 145),    # 深紫 #5b5091
+# ---------- 1. 流体多彩背景 ----------
+base = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+draw = ImageDraw.Draw(base)
+
+# 多个彩色光斑，位置分散，后面高斯模糊成流体
+blobs = [
+    # (cx, cy, radius, color)
+    (SIZE*0.25, SIZE*0.25, 260, (255, 154, 158, 255)),   # 粉红
+    (SIZE*0.78, SIZE*0.22, 240, (255, 179, 71, 255)),    # 珊瑚橙
+    (SIZE*0.82, SIZE*0.80, 250, (189, 140, 224, 255)),   # 紫罗兰
+    (SIZE*0.22, SIZE*0.82, 230, (132, 216, 255, 255)),   # 天蓝
+    (SIZE*0.52, SIZE*0.50, 200, (160, 233, 200, 255)),   # 薄荷绿
+    (SIZE*0.50, SIZE*0.10, 180, (255, 226, 159, 255)),   # 暖黄
 ]
+for cx, cy, r, color in blobs:
+    draw.ellipse([cx-r, cy-r, cx+r, cy+r], fill=color)
 
-avatar = make_gradient(size, gradient_colors)
+# 大幅模糊 -> 流体渐变
+fluid = base.filter(ImageFilter.GaussianBlur(radius=120))
+# 再叠一层轻微模糊增加层次
+fluid = fluid.filter(ImageFilter.GaussianBlur(radius=40))
 
-# 蒙版：圆形
-mask = Image.new('L', (size, size), 0)
-ImageDraw.Draw(mask).ellipse((0, 0, size, size), fill=255)
+# ---------- 2. 细线条几何装饰（白色半透明，呼应线条风） ----------
+lines = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+ld = ImageDraw.Draw(lines)
 
-final = Image.new('RGBA', (size, size), (0, 0, 0, 0))
-final.paste(avatar.convert('RGBA'), (0, 0), mask)
+# 同心圆
+for i in range(1, 7):
+    r = i * 34
+    ld.ellipse([SIZE//2 - r, SIZE//2 - r, SIZE//2 + r, SIZE//2 + r],
+               outline=(255, 255, 255, int(28 - i*2)), width=1)
 
-# 写字母 "P" 拉丁字母
-draw = ImageDraw.Draw(final)
+# 弧形流线（三段不同半径的弧）
+for k in range(3):
+    rr = 150 + k * 60
+    sweep = 200 - k*20
+    start = 30 + k*40
+    ld.arc([SIZE//2-rr, SIZE//2-rr, SIZE//2+rr, SIZE//2+rr],
+           start=start, end=start+sweep,
+           fill=(255, 255, 255, 30), width=1)
 
-# 用系统支持的字体（拉丁字母用 arial）
+# 散落小圆点
+import random
+random.seed(7)
+for _ in range(40):
+    x = random.randint(20, SIZE-20)
+    y = random.randint(20, SIZE-20)
+    # 避免中心区域
+    if (x-SIZE//2)**2 + (y-SIZE//2)**2 < 120**2:
+        continue
+    rr = random.randint(1, 3)
+    ld.ellipse([x-rr, y-rr, x+rr, y+rr], fill=(255, 255, 255, random.randint(40, 120)))
+
+# ---------- 3. 玫瑰色点睛曲线 ----------
+rose = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+rd = ImageDraw.Draw(rose)
+rd.arc([SIZE//2-180, SIZE//2-220, SIZE//2+180, SIZE//2+260],
+       start=210, end=330, fill=(255, 64, 129, 90), width=3)
+
+# ---------- 4. 字母 P（玻璃空心描边质感） ----------
+letter = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+ltd = ImageDraw.Draw(letter)
+
 font_path = None
 for p in [
     r"C:\Windows\Fonts\arialbd.ttf",
@@ -60,29 +80,42 @@ for p in [
     if os.path.exists(p):
         font_path = p
         break
-
-font = ImageFont.truetype(font_path, 260) if font_path else ImageFont.load_default()
+font = ImageFont.truetype(font_path, 300) if font_path else ImageFont.load_default()
 
 text = "P"
-bbox = draw.textbbox((0, 0), text, font=font)
-text_w = bbox[2] - bbox[0]
-text_h = bbox[3] - bbox[1]
-x = (size - text_w) // 2 - bbox[0]
-y = (size - text_h) // 2 - bbox[1] - 10
+bbox = ltd.textbbox((0, 0), text, font=font)
+tw, th = bbox[2]-bbox[0], bbox[3]-bbox[1]
+x = (SIZE - tw)//2 - bbox[0]
+y = (SIZE - th)//2 - bbox[1] - 14
 
-# 文字阴影
-shadow_offset = 6
-draw.text((x + shadow_offset, y + shadow_offset), text, font=font, fill=(0, 0, 0, 100))
-# 白色文字
-draw.text((x, y), text, font=font, fill=(255, 255, 255, 255))
+# 外发光阴影（深色，弱）
+ltd.text((x, y), text, font=font, fill=(0, 0, 0, 60))
+# 玻璃描边空心字：白色描边 + 半透明填充
+ltd.text((x, y), text, font=font, fill=(255, 255, 255, 55),
+         stroke_width=10, stroke_fill=(255, 255, 255, 235))
+# 内部再描一圈浅色增加立体
+ltd.text((x, y), text, font=font, fill=(255, 255, 255, 0),
+         stroke_width=3, stroke_fill=(255, 255, 255, 180))
 
-# 输出
-avatar_path = os.path.join(OUT, "avatar.png")
-final.convert('RGB').save(avatar_path, "PNG", optimize=True)
-print(f"avatar saved: {avatar_path}, size={os.path.getsize(avatar_path)} bytes")
+# ---------- 合成 ----------
+final = Image.alpha_composite(fluid, lines)
+final = Image.alpha_composite(final, rose)
+final = Image.alpha_composite(final, letter)
 
-# 生成 favicon 64x64
-favicon = final.resize((64, 64), Image.LANCZOS)
-favicon_path = os.path.join(OUT, "favicon.png")
-favicon.convert('RGB').save(favicon_path, "PNG", optimize=True)
-print(f"favicon saved: {favicon_path}")
+# 圆形裁剪
+mask = Image.new('L', (SIZE, SIZE), 0)
+ImageDraw.Draw(mask).ellipse((0, 0, SIZE, SIZE), fill=255)
+out = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+out.paste(final, (0, 0), mask)
+
+# 轻微内描边（白圈）增加精致感
+ring = ImageDraw.Draw(out)
+ring.ellipse((6, 6, SIZE-6, SIZE-6), outline=(255, 255, 255, 120), width=3)
+
+out.convert('RGB').save(os.path.join(OUT, "avatar.png"), "PNG", optimize=True)
+print("avatar saved:", os.path.getsize(os.path.join(OUT, "avatar.png")), "bytes")
+
+# favicon 64
+fav = out.resize((64, 64), Image.LANCZOS)
+fav.convert('RGB').save(os.path.join(OUT, "favicon.png"), "PNG", optimize=True)
+print("favicon saved")
